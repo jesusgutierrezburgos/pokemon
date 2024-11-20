@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Combate Pokémon</title>
+    <link rel="stylesheet" href="index.css">
+    <script>
+        // Función para manejar el envío del formulario
+        document.addEventListener('submit', event => {
+            event.preventDefault();
+            const email = document.getElementById('nick').value;
+            const password = document.getElementById('pass').value;
+            const errorMessageElement = document.getElementById('mensaje-error');
+            errorMessageElement.textContent = ''; // Limpiar cualquier mensaje de error anterior
+
+            const options = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    apikey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlbWxzcXh1bmtzYmN6d3BmdXRuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjg1NDU5MTgsImV4cCI6MjA0NDEyMTkxOH0.ALPTCxrQNJkv9s-DJLYoUkENgDS32C4IRTcusojhDzI',
+                    Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlbWxzcXh1bmtzYmN6d3BmdXRuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjg1NDU5MTgsImV4cCI6MjA0NDEyMTkxOH0.ALPTCxrQNJkv9s-DJLYoUkENgDS32C4IRTcusojhDzI'
+                },
+                body: `{"email":"${email}","password":"${password}"}`
+            };
+            fetch('https://cemlsqxunksbczwpfutn.supabase.co/auth/v1/token?grant_type=password', options)
+                .then(response => response.json())
+                .then(response => {
+                    if (response.access_token) {
+                        sessionStorage.setItem('access_token', response.access_token);
+                        sessionStorage.setItem('refresh_token', response.refresh_token);
+                        window.location.href = 'main.html';
+                    } else {
+                        errorMessageElement.textContent = 'Error: Usuario o contraseña incorrectos.';
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    errorMessageElement.textContent = 'Error: Algo salió mal. Inténtalo de nuevo más tarde.';
+                });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>¡Bienvenido al Combate Pokémon!</h1>
+        <div class="login-contenedor">
+            <img src="img/pokeball.png" alt="Pokéball" class="logo">
+            <form>
+                <label for="nick">Email:</label>
+                <input type="text" name="nick" id="nick" value="paco_aguilera@yahoo.es">
+                <label for="pass">Contraseña:</label>
+                <input type="password" name="pass" id="pass" value="paco1234">
+                <input type="submit" value="Entrar">
+            </form>
+            <p id="mensaje-error"></p>
+        </div>
+    </div>
+</body>
+</html>
