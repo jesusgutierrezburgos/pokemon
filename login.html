@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <link rel="stylesheet" href="login.css">
+
+        <script>
+            document.addEventListener('submit', event => {
+                event.preventDefault()
+                const email = document.getElementById('nick').value
+                const password = document.getElementById('pass').value
+                const errorMessageElement = document.getElementById('error-message') // Elemento para mostrar el error
+                errorMessageElement.textContent = '' // Limpiar cualquier mensaje de error anterior
+
+                const options = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'User-Agent': 'insomnia/9.2.0',
+                    apikey:
+                        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlbWxzcXh1bmtzYmN6d3BmdXRuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjg1NDU5MTgsImV4cCI6MjA0NDEyMTkxOH0.ALPTCxrQNJkv9s-DJLYoUkENgDS32C4IRTcusojhDzI',
+                    Authorization:
+                        'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlbWxzcXh1bmtzYmN6d3BmdXRuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjg1NDU5MTgsImV4cCI6MjA0NDEyMTkxOH0.ALPTCxrQNJkv9s-DJLYoUkENgDS32C4IRTcusojhDzI',
+                    },
+                    body:
+                        `{"email":"${email}","password":"${password}"}`,
+                }
+                fetch('https://cemlsqxunksbczwpfutn.supabase.co/auth/v1/token?grant_type=password', options,)
+                .then(response => response.json())
+                .then(response => {
+                    console.log(response)
+                    if (response.access_token) {
+                        // Login exitoso, guardar tokens y redirigir
+                        sessionStorage.setItem('access_token', response.access_token)
+                        sessionStorage.setItem('refresh_token', response.refresh_token)
+                        window.location.href = 'index.html'
+                    } else {
+                        // Si no hay token, mostrar mensaje de error
+                        errorMessageElement.textContent = 'Error: Usuario o contraseña incorrectos.'
+                    }
+                })
+                .catch(err => {
+                    console.error(err)
+                    errorMessageElement.textContent = 'Error: Algo salió mal. Inténtalo de nuevo más tarde.'
+                })
+            })
+        </script>
+    </head>
+    <body>
+        <form>
+            email: <input type="text" name="nick" id="nick" /> pass:
+        <input type="text" name="pass" id="pass" />
+        <input type="submit" value="Enviar" />
+        </form>
+        <!-- Aquí se mostrará el mensaje de error -->
+        <p id="error-message" style="color: red"></p>
+    </body>
+</html>
